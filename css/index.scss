@@ -213,11 +213,11 @@ $pad: getRem(30);
     }
 }
 #nav-wrap{
+    margin-top: getRem(20);
     height: getRem(90);
     width: 100%;
 }
 #nav{
-    margin-top: getRem(20);
     padding: 0 $pad;
     background-color: white;
     @include flex-row();
@@ -285,7 +285,7 @@ $pad: getRem(30);
         font-size: getRem(36);
         color: #333333;
         margin: getRem(30) 0;
-        &:first-child{
+        &:first-of-type{
             margin-top: 0;
         }
     }

@@ -214,12 +214,12 @@ a {
 }
 
 #nav-wrap {
+  margin-top: 0.26667rem;
   height: 1.2rem;
   width: 100%;
 }
 
 #nav {
-  margin-top: 0.26667rem;
   padding: 0 0.4rem;
   background-color: white;
   display: flex;
@@ -305,7 +305,7 @@ a {
   color: #333333;
   margin: 0.4rem 0;
 }
-.intro-item h1:first-child {
+.intro-item h1:first-of-type {
   margin-top: 0;
 }
 .intro-item p {

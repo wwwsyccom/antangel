@@ -52,7 +52,7 @@
         <div id="nav-wrap">
             <div id="nav" :class="navClass">
                 <ul>
-                    <li :class="navActive=='detail'?'active':''" @click.stop="navActive='detail'"><a href="#detail-flag">项目详情</a></li>
+                    <li :class="navActive=='detail'?'active':''" @click.stop="navActive='detail'"><a href="#nav-wrap">项目详情</a></li>
                     <li :class="navActive=='advantage'?'active':''" @click.stop="navActive='advantage'"><a href="#advantage-flag">项目优势</a></li>
                     <li :class="navActive=='bp'?'active':''" @click.stop="navActive='bp'"><a href="#bp-flag">项目BP</a></li>
                 </ul>
@@ -60,7 +60,7 @@
             </div>
         </div>
         <div id="detail" class="intro-item skip">
-            <div class="flag" id="detail-flag"></div>
+            <!-- <div class="flag" id="detail-flag"></div> -->
             <h1>项目简介</h1>
             <p>{{data.summary}}</p>
             <h1>用户痛点</h1>
@@ -259,7 +259,7 @@
     </div>
     <script src="js/rem.js"></script>
     <script src="js/iscroll.js"></script>
-    <script src="js/vue.js"></script>
+    <script src="js/vue-min.js"></script>
     <script src="js/vue-resource.js"></script>
     <script type="text/javascript">
         function isPassive() {
@@ -273,13 +273,10 @@
             } catch(e) {}
             return supportsPassiveOption;
         }
-        function loaded(){
-            new IScroll('.scroll-container', { scrollX: true, scrollY: false, mouseWheel: true });
-        }
-        document.addEventListener('touchmove', function (e) { e.preventDefault(); }, isPassive() ? {
-            capture: false,
-            passive: false
-        } : false);
+        // document.addEventListener('touchmove', function (e) { e.preventDefault(); }, isPassive() ? {
+        //     capture: false,
+        //     passive: false
+        // } : false);
 
         new Vue({
             el: '#app',
@@ -300,6 +297,12 @@
                 pNews: []
             },
             created(){
+                if(getParam('id')){
+                    this.projectId = getParam('id');
+                }
+                if(getParam('memberId')){
+                    this.memberId = getParam('memberId');
+                }
                 var self = this;
                 Vue.http.post(this.baseUrl+'project/info/andviews',{"id": this.projectId,"memberId": this.memberId},{}).then(rsp=>{
                     this.data = rsp.data.data;
@@ -374,15 +377,11 @@
                     var advantageTop = advantage.getBoundingClientRect().top;
                     var bpTop = bp.getBoundingClientRect().top;
                     var navTop = nav.getBoundingClientRect().top;
-                    console.log(navTop);
                     if(navTop<-10){
                         self.navClass = 'fixed';
                     }else{
                         self.navClass = '';
                     }
-                });
-                Vue.nextTick(function(){
-                    console.log('helloo.........');
                 });
             },
             mounted(){
@@ -458,6 +457,14 @@
             }
             return '刚刚';
         };
+        function getParam(paramName) { 
+            paramValue = "", isFound = !1; 
+            if (this.location.search.indexOf("?") == 0 && this.location.search.indexOf("=") > 1) { 
+                arrSource = unescape(this.location.search).substring(1, this.location.search.length).split("&"), i = 0; 
+                while (i < arrSource.length && !isFound) arrSource[i].indexOf("=") > 0 && arrSource[i].split("=")[0].toLowerCase() == paramName.toLowerCase() && (paramValue = arrSource[i].split("=")[1], isFound = !0), i++ 
+            } 
+            return paramValue == "" && (paramValue = null), paramValue 
+        } 
 
     </script>
 </body>
