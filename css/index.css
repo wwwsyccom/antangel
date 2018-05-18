@@ -53,6 +53,10 @@ a {
   background-color: #4d6b9f;
   overflow: hidden;
 }
+#banner video {
+  height: 100%;
+  width: 100%;
+}
 #banner img {
   width: 100%;
 }

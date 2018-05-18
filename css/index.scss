@@ -65,6 +65,10 @@ $pad: getRem(30);
     height: getRem(360); 
     background-color: #4d6b9f;
     overflow: hidden;  
+    video{
+        height: 100%;
+        width: 100%;
+    }
     img{
         width: 100%;
     }

@@ -7,9 +7,12 @@
     <title></title>
     <link rel="stylesheet" href="css/index.css">
 </head>
-<body onload="loaded()">
-    <div id="app">
-        <div id="banner"><img :src="baseImgUrl+data.headImage" /></div>
+<body>
+    <div id="app" @click="download">
+        <div id="banner" @click.stop="">
+            <video :src="baseImgUrl+data.videoList[0].httpUrl" controls="controls" loop="loop" v-if="data.videoList&&data.video[0]"></video>
+            <img v-else :src="baseImgUrl+data.headImage" />
+        </div>
         <div id="profile">
             <div class="class1">
                 <img :src="baseImgUrl+data.smallLogo" alt="" class="logo">
@@ -32,7 +35,7 @@
                     <div><span>目标融资金额:</span><span>{{data.targetInvestment/10000}}万</span></div>
                     <div><span>出让股份:</span><span>{{data.stock}}%</span></div>
                 </div>
-                <div class="intend">
+                <div class="intend download">
                     <div>意向进度详情</div>
                     <div :class="!data.investmemberCount?none:''">
                         <img :src="baseImgUrl+item" alt="" v-for="item in data.investheadImage">
@@ -49,11 +52,11 @@
         <div id="nav-wrap">
             <div id="nav" :class="navClass">
                 <ul>
-                    <li :class="navActive=='detail'?'active':''" @click="navActive='detail'"><a href="#detail-flag">项目详情</a></li>
-                    <li :class="navActive=='advantage'?'active':''" @click="navActive='advantage'"><a href="#advantage-flag">项目优势</a></li>
-                    <li :class="navActive=='bp'?'active':''" @click="navActive='bp'"><a href="#bp-flag">项目BP</a></li>
+                    <li :class="navActive=='detail'?'active':''" @click.stop="navActive='detail'"><a href="#detail-flag">项目详情</a></li>
+                    <li :class="navActive=='advantage'?'active':''" @click.stop="navActive='advantage'"><a href="#advantage-flag">项目优势</a></li>
+                    <li :class="navActive=='bp'?'active':''" @click.stop="navActive='bp'"><a href="#bp-flag">项目BP</a></li>
                 </ul>
-                <div class="button1">我有意向</div>
+                <div class="button1 download">我有意向</div>
             </div>
         </div>
         <div id="detail" class="intro-item skip">
@@ -133,7 +136,7 @@
         <div id="bp" class="intro-item skip">
             <div class="flag" id="bp-flag"></div>
             <h1>项目BP</h1>
-            <div class="bp">
+            <div class="bp download">
                 <img src="images/bp.png" alt="">
                 <div>
                     <span>{{data.name}}计划书</span>
@@ -142,7 +145,7 @@
                 <div class="">查看BP</div>
             </div>
             <h1>项目图片</h1>
-            <div class="scroll-container">
+            <div class="scroll-container download" @click.stop="">
                 <ul>
                     <li class="swiper-slide" v-for="item in data.imagesList"><img :src="baseImgUrl+item.imageUrl" alt=""></li>
                     <!-- <li class="swiper-slide"><img src="test/photo.png" alt=""></li>
@@ -150,7 +153,7 @@
                 </ul>
             </div>
             <h1>审核文件</h1>
-            <ul class="files">
+            <ul class="files download">
                 <li>
                     <div>营业执照</div>
                     <div class="pass">已审核<img src="images/pass.png" alt=""><img src="images/arrow2.png" alt=""></div>
@@ -169,9 +172,9 @@
         <div id="news" class="intro-item">
             <div class="h1-wrap">
                 <h1>项目动态</h1>
-                <div class="more">全部<img src="images/arrow2.png" alt=""></div>
+                <div class="more download">全部<img src="images/arrow2.png" alt=""></div>
             </div>
-            <ul>
+            <ul class="download">
                 <li v-for="item in pNews">
                     <div class="left">
                         <div class="title">{{item.title}}</div>
@@ -192,9 +195,9 @@
         <div id="ask-remark" class="intro-item">
             <div class="h1-wrap">
                 <h1>项目问答</h1>
-                <div class="more">查看全部{{answeredNum}}个问答<img src="images/arrow2.png" alt=""></div>
+                <div class="more download">查看全部{{answeredNum}}个问答<img src="images/arrow2.png" alt=""></div>
             </div>
-            <ul class="ask-list">
+            <ul class="ask-list download">
                 <li v-for="item in answerDOList">
                     <img src="images/ask.png" alt="">
                     <span>{{item.question}}</span>
@@ -208,7 +211,7 @@
             </ul>
             <div class="h1-wrap">
                 <h1>项目评论</h1>
-                <div class="more">查看全部{{comments[0].commentNum}}个评论<img src="images/arrow2.png" alt=""></div>
+                <div class="more download">查看全部{{comments[0].commentNum}}个评论<img src="images/arrow2.png" alt=""></div>
             </div>
             <ul class="remark-list">
                 <li v-for="comment in comments">
@@ -226,7 +229,7 @@
                                 </div>
                             </div>
                         </div>
-                        <img src="images/dz-2x.png" alt="">
+                        <img src="images/dz-2x.png" alt="" class="download">
                     </div>
                     <div class="content">
                         <div class="detail">
@@ -242,10 +245,10 @@
                     </div>
                 </li>
             </ul>
-            <div class="all-remark">查看全部{{comments[0].commentNum}}个评论</div>
+            <div class="all-remark download">查看全部{{comments[0].commentNum}}个评论</div>
         </div>
         <div id="nomore">没有更多内容了</div>
-        <div id="bottom">
+        <div id="bottom" class="download">
             <div>
                 <div><img src="images/remark.png" alt=""><span>{{data.commentNum}}</span></div>
                 <div><img src="images/collect.png" alt=""><span>{{data.supportNum}}</span></div>
@@ -313,6 +316,9 @@
                     for(var i=0,len=5-this.star.length;i<len;i++){
                         this.star.push('empty');
                     }
+                    setTimeout(() => {
+                        new IScroll('.scroll-container', { scrollX: true, scrollY: false, mouseWheel: true });
+                    }, 100);
                 });
                 //项目问答
                 Vue.http.post(this.baseUrl+'project/info/question',{"id": this.projectId},{}).then(rsp=>{
@@ -375,7 +381,16 @@
                         self.navClass = '';
                     }
                 });
-
+                Vue.nextTick(function(){
+                    console.log('helloo.........');
+                });
+            },
+            mounted(){
+            },
+            methods:{
+                download(){
+                    window.location.href = 'http://url.cn/5Imqyj2';
+                }
             }
         });
         function timestampToTime(timestamp) {
