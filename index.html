@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>哈喽自动售货商店</title>
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body onload="loaded()">
+    <div id="app">
+        <div id="banner"><img :src="baseImgUrl+data.headImage" /></div>
+        <div id="profile">
+            <div class="class1">
+                <img :src="baseImgUrl+data.smallLogo" alt="" class="logo">
+                <div>
+                    <div class="name">{{data.name}}</div>
+                    <div>{{data.city}} | {{projectProcess[data.projectprocess]}}</div>
+                </div>
+                <div>{{data.projectIndustrys}}</div>
+            </div>
+            <div class="company">{{data.projectInfoObject.company}}</div>
+            <div class="score-wrap">
+                <div>评分:</div>
+                <div class="star-wrap">
+                    <div v-for="item in star" :class="item"></div>
+                </div>
+                <div>({{data.rankScore}}分)</div>
+            </div>
+            <div class="finance">
+                <div>
+                    <div><span>目标融资金额:</span><span>{{data.targetInvestment/10000}}万</span></div>
+                    <div><span>出让股份:</span><span>{{data.stock}}%</span></div>
+                </div>
+                <div class="intend">
+                    <div>意向进度详情</div>
+                    <div :class="!data.investmemberCount?none:''">
+                        <img :src="baseImgUrl+item" alt="" v-for="item in data.investheadImage">
+                        <!-- <img src="test/photo.png" alt="">
+                        <img src="test/photo.png" alt="">
+                        <img src="test/photo.png" alt=""> -->
+                        <span v-if="data.investmemberCount>0">等{{data.investmemberCount}}人有意向</span>
+                        <span v-else>暂无意向</span>
+                    </div>
+                </div>
+            </div>
+            <div class="desc">{{data.shortSentence}}</div>
+        </div>
+        <div id="nav-wrap">
+            <div id="nav" :class="navClass">
+                <ul>
+                    <li :class="navActive=='detail'?'active':''" @click="navActive='detail'"><a href="#detail-flag">项目详情</a></li>
+                    <li :class="navActive=='advantage'?'active':''" @click="navActive='advantage'"><a href="#advantage-flag">项目优势</a></li>
+                    <li :class="navActive=='bp'?'active':''" @click="navActive='bp'"><a href="#bp-flag">项目BP</a></li>
+                </ul>
+                <div class="button1">我有意向</div>
+            </div>
+        </div>
+        <div id="detail" class="intro-item skip">
+            <div class="flag" id="detail-flag"></div>
+            <h1>项目简介</h1>
+            <p>{{data.summary}}</p>
+            <h1>用户痛点</h1>
+            <p>{{data.customerPoint}}</p>
+            <h1>产品服务</h1>
+            <p>{{data.productInfo}}</p>
+            <h1>竞品分析</h1>
+            <p>{{data.market}}</p>
+        </div>
+        <div id="advantage" class="intro-item skip">
+            <div class="flag" id="advantage-flag"></div>
+            <h1>核心价值及项目亮点</h1>
+            <p>{{data.corevalue}}</p>
+            <h1>财务及用户数据分析</h1>
+            <p>{{data.financeAndData}}</p>
+            <div class="h1-wrap">
+                <h1>团队规模({{data.teaminfoList.length}}人)</h1>
+                <div class="renling button1">项目方认领</div>
+            </div>
+            <div class="team" v-for="item in data.teaminfoList">
+                <div>
+                    <img :src="baseImgUrl+item.headImage" alt="">
+                    <div><span class="name">{{item.name}}</span><span class="title">{{item.position}}</span></div>
+                </div>
+                <h2>个人简介：</h2>
+                <div class="profile">
+                    {{item.introduce}}
+                </div>
+                <h2>工作经历</h2>
+                <ul class="box1">
+                    <li v-for="work in item.works">
+                        <div>
+                            <span class="company">{{work.company}}</span><span class="title">{{work.position}}</span>
+                        </div>
+                        <div class="department">{{work.department}}</div>
+                    </li>
+                    <li>
+                        <div>
+                            <span class="company">英联食品有限公司</span><span class="title">华东大区经历</span>
+                        </div>
+                        <div class="department">市场部</div>
+                    </li>
+                    <li>
+                        <div>
+                            <span class="company">英联食品有限公司</span><span class="title">华东大区经历</span>
+                        </div>
+                        <div class="department">市场部</div>
+                    </li>
+                </ul>
+                <h2>教育经历</h2>
+                <ul class="box1">
+                    <li v-for="edu in item.college">
+                        <div>
+                            <span class="company">{{edu.school}}</span><span class="title">{{edu.diploma}}</span>
+                        </div>
+                        <div class="department">{{edu.major}}</div>
+                    </li>
+                    <li>
+                        <div>
+                            <span class="company">英联食品有限公司</span><span class="title">华东大区经历</span>
+                        </div>
+                        <div class="department">市场部</div>
+                    </li>
+                    <li>
+                        <div>
+                            <span class="company">英联食品有限公司</span><span class="title">华东大区经历</span>
+                        </div>
+                        <div class="department">市场部</div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div id="bp" class="intro-item skip">
+            <div class="flag" id="bp-flag"></div>
+            <h1>项目BP</h1>
+            <div class="bp">
+                <img src="images/bp.png" alt="">
+                <div>
+                    <span>{{data.name}}计划书</span>
+                    <span>{{data.planViewCount}}人查看</span>
+                </div>
+                <div class="">查看BP</div>
+            </div>
+            <h1>项目图片</h1>
+            <div class="scroll-container">
+                <ul>
+                    <li class="swiper-slide" v-for="item in data.imagesList"><img :src="baseImgUrl+item.imageUrl" alt=""></li>
+                    <!-- <li class="swiper-slide"><img src="test/photo.png" alt=""></li>
+                    <li class="swiper-slide"><img src="test/photo.png" alt=""></li> -->
+                </ul>
+            </div>
+            <h1>审核文件</h1>
+            <ul class="files">
+                <li>
+                    <div>营业执照</div>
+                    <div class="pass">已审核<img src="images/pass.png" alt=""><img src="images/arrow2.png" alt=""></div>
+                </li>
+                <li>
+                    <div>企业征信</div>
+                    <div :class="data.qyzc?'pass':''">{{data.qyzc?'已审核':'未完善'}}<img src="images/arrow2.png" alt=""></div>
+                </li>
+                <li>
+                    <div>个人征信</div>
+                    <div :class="data.grzc?'pass':''">{{data.grzc?'已审核':'未完善'}}<img src="images/arrow2.png" alt=""></div>
+                </li>
+            </ul>
+            <div class="more-files" style="display: none;">查看更多文件<img src="images/more.png" alt=""></div>
+        </div>
+        <div id="news" class="intro-item">
+            <div class="h1-wrap">
+                <h1>项目动态</h1>
+                <div class="more">全部<img src="images/arrow2.png" alt=""></div>
+            </div>
+            <ul>
+                <li v-for="item in pNews">
+                    <div class="left">
+                        <div class="title">{{item.title}}</div>
+                        <div class="date">{{item.createTime}}</div>
+                    </div>
+                    <img :src="baseImgUrl+item.cover" alt="">
+                </li> 
+            </ul>
+        </div>
+        <div id="creater">
+            <img :src="baseImgUrl+data.headImage" alt="">
+            <div>
+                <div><span class="name">{{data.realName}}</span><span class="icon">项目创建人</span></div>
+                <div class="ceo">{{data.position}}</div>
+            </div>
+            <div style="display: none;">+关注</div>
+        </div>
+        <div id="ask-remark" class="intro-item">
+            <div class="h1-wrap">
+                <h1>项目问答</h1>
+                <div class="more">查看全部{{answeredNum}}个问答<img src="images/arrow2.png" alt=""></div>
+            </div>
+            <ul class="ask-list">
+                <li v-for="item in answerDOList">
+                    <img src="images/ask.png" alt="">
+                    <span>{{item.question}}</span>
+                    <span>已回答</span>
+                </li>
+                <li v-for="item in questionDOList">
+                    <img src="images/ask.png" alt="">
+                    <span>{{item.question}}</span>
+                    <span>未回答</span>
+                </li>
+            </ul>
+            <div class="h1-wrap">
+                <h1>项目评论</h1>
+                <div class="more">查看全部{{comments[0].commentNum}}个评论<img src="images/arrow2.png" alt=""></div>
+            </div>
+            <ul class="remark-list">
+                <li v-for="comment in comments">
+                    <div class="top">
+                        <img :src="baseImgUrl+comment.headImage" alt="">
+                        <div>
+                            <div class="name-title">
+                                <span class="name">{{comment.nickName}}</span>
+                                <span :class="(comment.enterpriserType==1?'touzi':'chuang')+' title'">{{comment.enterpriserType==1?'投资人':'创业者'}}</span>
+                            </div>
+                            <div class="time">{{comment.createTime}}</div>
+                            <div class="star-outer" v-if="comment.rankScore>0">评分：
+                                <div class="star-wrap">
+                                    <div :class="star" v-for="star in comment.stars"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <img src="images/dz-2x.png" alt="">
+                    </div>
+                    <div class="content">
+                        <div class="detail">
+                            {{comment.content}}
+                        </div>
+                        <div class="reply" v-if="comment.childrenList && comment.childrenList.length>0">
+                            <div v-for="(sub,index) in comment.childrenList" v-if="index<2">
+                                <span class="name">{{sub.nickName}}:</span>
+                                {{sub.content}}
+                            </div>
+                            <div class="all" v-if="comment.childrenList.length>2">查看全部{{comment.childrenList.length}}个回复</div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+            <div class="all-remark">查看全部{{comments[0].commentNum}}个评论</div>
+        </div>
+        <div id="nomore">没有更多内容了</div>
+        <div id="bottom">
+            <div>
+                <div><img src="images/remark.png" alt=""><span>{{data.commentNum}}</span></div>
+                <div><img src="images/collect.png" alt=""><span>{{data.supportNum}}</span></div>
+            </div>
+            <div class="">参与群聊</div>
+            <div>立即沟通</div>
+        </div>
+    </div>
+    <script src="js/rem.js"></script>
+    <script src="js/iscroll.js"></script>
+    <script src="js/vue.js"></script>
+    <script src="js/vue-resource.js"></script>
+    <script type="text/javascript">
+        function isPassive() {
+            var supportsPassiveOption = false;
+            try {
+                addEventListener("test", null, Object.defineProperty({}, 'passive', {
+                    get: function () {
+                        supportsPassiveOption = true;
+                    }
+                }));
+            } catch(e) {}
+            return supportsPassiveOption;
+        }
+        function loaded(){
+            new IScroll('.scroll-container', { scrollX: true, scrollY: false, mouseWheel: true });
+        }
+        document.addEventListener('touchmove', function (e) { e.preventDefault(); }, isPassive() ? {
+            capture: false,
+            passive: false
+        } : false);
+
+        new Vue({
+            el: '#app',
+            data: {
+                baseUrl: 'https://api.mayiangel.com/',
+                baseImgUrl: 'https://mayiangel.oss-cn-hangzhou.aliyuncs.com/',
+                data: {},
+                star: [],
+                projectId: 2498,
+                memberId: 26124,
+                answerDOList: [], //已回答问题
+                questionDOList: [], //未回答问题
+                answeredNum: 0,
+                comments: null,  //评论
+                navClass: '',
+                navActive: 'detail',
+                projectProcess: ['','想法创意','研发中','上线运营','已有收入','盈亏平均','快速成长'],
+                pNews: []
+            },
+            created(){
+                var self = this;
+                Vue.http.post(this.baseUrl+'project/info/andviews',{"id": this.projectId,"memberId": this.memberId},{}).then(rsp=>{
+                    this.data = rsp.data.data;
+                    var star = this.data.rankScore;
+                    var starInt = parseInt(star);
+                    for(var i=0;i<starInt;i++){
+                        this.star.push('full');
+                    }
+                    //有小树
+                    if(star>starInt){
+                        this.star.push('half');
+                    }
+                    for(var i=0,len=5-this.star.length;i<len;i++){
+                        this.star.push('empty');
+                    }
+                });
+                //项目问答
+                Vue.http.post(this.baseUrl+'project/info/question',{"id": this.projectId},{}).then(rsp=>{
+                    this.answerDOList = rsp.data.data.answerDOList;
+                    this.questionDOList = rsp.data.data.questionDOList;
+                    this.answeredNum = rsp.data.data.answeredNum;
+                });
+                //评论列表
+                var reqData = {
+                    projectId: this.projectId,
+                    memberId: this.memberId,
+                    pageNum: 2,
+                    pageSize: 5
+                };
+                Vue.http.post(this.baseUrl+'site/comment/list', reqData, {}).then(rsp=>{
+                    this.comments = rsp.data.data;
+                    this.comments.map((item)=>{
+                        var stars = [];
+                        var star = item.rankScore;
+                        var starInt = parseInt(star);
+                        for(var i=0;i<starInt;i++){
+                            stars.push('full');
+                        }
+                        //有小树
+                        if(star>starInt){
+                            stars.push('half');
+                        }
+                        for(var i=0,len=5-stars.length;i<len;i++){
+                            stars.push('empty');
+                        }
+                        item.createTime = dateDiff(item.createTime);
+                        item.stars = stars;
+                    });
+                });
+                //项目动态
+                reqData = {
+                    'projectId': 2498
+                };
+                Vue.http.post(this.baseUrl+'project/projectnews/find', reqData, {}).then(rsp=>{
+                    this.pNews= rsp.data.data;
+                    this.pNews.map(item=>{
+                        item.createTime = timestampToTime(item.createTime);
+                    });
+                });
+
+                window.addEventListener('scroll', function(){
+                    var detail = document.getElementById('detail');
+                    var advantage = document.getElementById('advantage');
+                    var bp = document.getElementById('bp');
+                    var nav = document.getElementById('nav-wrap');
+
+                    var detailTop = detail.getBoundingClientRect().top;
+                    var advantageTop = advantage.getBoundingClientRect().top;
+                    var bpTop = bp.getBoundingClientRect().top;
+                    var navTop = nav.getBoundingClientRect().top;
+                    console.log(navTop);
+                    if(navTop<-10){
+                        self.navClass = 'fixed';
+                    }else{
+                        self.navClass = '';
+                    }
+                });
+
+            }
+        });
+        function timestampToTime(timestamp) {
+            var date = new Date(timestamp);//时间戳为10位需*1000，时间戳为13位的话不需乘1000
+            Y = date.getFullYear() + '年';
+            M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '月';
+            D = date.getDate() + '日';
+            return Y+M+D;
+        }
+        var dateDiff = function (timestamp) {
+            // 补全为13位
+            var arrTimestamp = (timestamp + '').split('');
+            for (var start = 0; start < 13; start++) {
+                if (!arrTimestamp[start]) {
+                    arrTimestamp[start] = '0';
+                }
+            }
+            timestamp = arrTimestamp.join('') * 1;
+
+            var minute = 1000 * 60;
+            var hour = minute * 60;
+            var day = hour * 24;
+            var halfamonth = day * 15;
+            var month = day * 30;
+            var now = new Date().getTime();
+            var diffValue = now - timestamp;
+
+            // 如果本地时间反而小于变量时间
+            if (diffValue < 0) {
+                return '不久前';
+            }
+
+            // 计算差异时间的量级
+            var monthC = diffValue / month;
+            var weekC = diffValue / (7 * day);
+            var dayC = diffValue / day;
+            var hourC = diffValue / hour;
+            var minC = diffValue / minute;
+
+            // 数值补0方法
+            var zero = function (value) {
+                if (value < 10) {
+                    return '0' + value;
+                }
+                return value;
+            };
+
+            // 使用
+            if (monthC > 12) {
+                // 超过1年，直接显示年月日
+                return (function () {
+                    var date = new Date(timestamp);
+                    return date.getFullYear() + '年' + zero(date.getMonth() + 1) + '月' + zero(date.getDate()) + '日';
+                })();
+            } else if (monthC >= 1) {
+                return parseInt(monthC) + "月前";
+            } else if (weekC >= 1) {
+                return parseInt(weekC) + "周前";
+            } else if (dayC >= 1) {
+                return parseInt(dayC) + "天前";
+            } else if (hourC >= 1) {
+                return parseInt(hourC) + "小时前";
+            } else if (minC >= 1) {
+                return parseInt(minC) + "分钟前";
+            }
+            return '刚刚';
+        };
+
+    </script>
+</body>
+</html>
