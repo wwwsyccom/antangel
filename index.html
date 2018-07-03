@@ -8,12 +8,29 @@
     <link rel="stylesheet" href="css/index.css">
 </head>
 <body>
-    <div id="app" @click="download">
-        <div id="banner" @click.stop="">
-            <video :src="baseImgUrl+data.videoList[0].httpUrl" controls="controls" loop="loop" v-if="data.videoList&&data.video[0]"></video>
-            <img v-else :src="baseImgUrl+data.headImage" />
-        </div>
-        <div id="profile">
+    <div id="app" @click="download" v-cloak>
+        <!-- <div id="banner" @click.stop=""> -->
+            <!-- <video :src="baseImgUrl+data.videoList[0].httpUrl" control autoplay loop="loop" v-if="data.videoList&&data.videoList[0]&&data.videoList[0].httpUrl"></video> -->
+            <!-- <video :src="baseImgUrl+data.videoList[0].httpUrl" control autoplay loop="loop"></video> -->
+            <!-- <video :src="baseImgUrl+data.videoList[0].httpUrl" control autoplay loop="loop" style="width:100%;height:200px;"></video> -->
+            <!-- <img v-else-if="data.headImage" :src="baseImgUrl+data.headImage" />
+            <img v-else src="images/banner.jpeg" /> -->
+        <!-- </div> -->
+            <!-- <video :src="baseImgUrl+data.videoList[0].httpUrl" control autoplay loop="loop" style="width:100%;height:200px;"></video> -->
+        <div id="profile" @click.stop="">
+            <div id="banner" @click.stop="">
+                <div class="bigLogo-wrap" v-if="data.videoList&&data.videoList[0]&&data.videoList[0].httpUrl&&showBigLogo" @click="play" >
+                    <img :src="baseImgUrl+data.bigLogo" class="bigLogo"/>
+                    <img src="images/play.png" class="play" />
+                </div>
+                <video id="video" :src="baseImgUrl+data.videoList[0].httpUrl" control loop="loop" style="width:100%;" v-if="data.videoList&&data.videoList[0]&&data.videoList[0].httpUrl"></video>
+                <img v-else-if="data.bigLogo" :src="baseImgUrl+data.bigLogo" />
+                <img v-else src="images/banner.jpeg" />
+            </div>
+            <!-- <video :src="baseImgUrl+data.videoList[0].httpUrl" control autoplay loop="loop" style="width:100%;height:200px;"></video> -->
+            <!-- <div style="font-size:12px;">
+                {{baseImgUrl+data.videoList[0].httpUrl}}
+            </div> -->
             <div class="class1">
                 <img :src="baseImgUrl+data.smallLogo" alt="" class="logo">
                 <div>
@@ -28,7 +45,7 @@
                 <div class="star-wrap">
                     <div v-for="item in star" :class="item"></div>
                 </div>
-                <div>({{data.rankScore}}分)</div>
+                <div>({{data.rankScore||'暂无评'}}分)</div>
             </div>
             <div class="finance">
                 <div>
@@ -38,10 +55,7 @@
                 <div class="intend download">
                     <div>意向进度详情</div>
                     <div :class="!data.investmemberCount?none:''">
-                        <img :src="baseImgUrl+item" alt="" v-for="item in data.investheadImage">
-                        <!-- <img src="test/photo.png" alt="">
-                        <img src="test/photo.png" alt="">
-                        <img src="test/photo.png" alt=""> -->
+                        <img :src="item?baseImgUrl+item:'images/photo-default.png'" alt="" v-for="item in data.investheadImage">
                         <span v-if="data.investmemberCount>0">等{{data.investmemberCount}}人有意向</span>
                         <span v-else>暂无意向</span>
                     </div>
@@ -69,6 +83,7 @@
             <p>{{data.productInfo}}</p>
             <h1>竞品分析</h1>
             <p>{{data.market}}</p>
+            <div id="detail-bottom"></div>
         </div>
         <div id="advantage" class="intro-item skip">
             <div class="flag" id="advantage-flag"></div>
@@ -77,7 +92,7 @@
             <h1>财务及用户数据分析</h1>
             <p>{{data.financeAndData}}</p>
             <div class="h1-wrap">
-                <h1>团队规模({{data.teaminfoList.length}}人)</h1>
+                <h1>团队规模({{data.projectInfoObject.employeeNum}}人)</h1>
                 <div class="renling button1">项目方认领</div>
             </div>
             <div class="team" v-for="item in data.teaminfoList">
@@ -97,18 +112,6 @@
                         </div>
                         <div class="department">{{work.department}}</div>
                     </li>
-                    <li>
-                        <div>
-                            <span class="company">英联食品有限公司</span><span class="title">华东大区经历</span>
-                        </div>
-                        <div class="department">市场部</div>
-                    </li>
-                    <li>
-                        <div>
-                            <span class="company">英联食品有限公司</span><span class="title">华东大区经历</span>
-                        </div>
-                        <div class="department">市场部</div>
-                    </li>
                 </ul>
                 <h2>教育经历</h2>
                 <ul class="box1">
@@ -118,20 +121,9 @@
                         </div>
                         <div class="department">{{edu.major}}</div>
                     </li>
-                    <li>
-                        <div>
-                            <span class="company">英联食品有限公司</span><span class="title">华东大区经历</span>
-                        </div>
-                        <div class="department">市场部</div>
-                    </li>
-                    <li>
-                        <div>
-                            <span class="company">英联食品有限公司</span><span class="title">华东大区经历</span>
-                        </div>
-                        <div class="department">市场部</div>
-                    </li>
                 </ul>
             </div>
+            <div id="advantage-bottom"></div>
         </div>
         <div id="bp" class="intro-item skip">
             <div class="flag" id="bp-flag"></div>
@@ -145,12 +137,13 @@
                 <div class="">查看BP</div>
             </div>
             <h1>项目图片</h1>
-            <div class="scroll-container download" @click.stop="">
+            <div class="scroll-container download" @click.stop="" v-if="data.imagesList&&data.imagesList.length>0&&data.imagesList[0].imageUrl">
                 <ul>
                     <li class="swiper-slide" v-for="item in data.imagesList"><img :src="baseImgUrl+item.imageUrl" alt=""></li>
-                    <!-- <li class="swiper-slide"><img src="test/photo.png" alt=""></li>
-                    <li class="swiper-slide"><img src="test/photo.png" alt=""></li> -->
                 </ul>
+            </div>
+            <div v-else class="pImage-none">
+                <img src="images/wtp-3x.png" />
             </div>
             <h1>审核文件</h1>
             <ul class="files download">
@@ -168,6 +161,7 @@
                 </li>
             </ul>
             <div class="more-files" style="display: none;">查看更多文件<img src="images/more.png" alt=""></div>
+            <div id="bp-bottom"></div>
         </div>
         <div id="news" class="intro-item">
             <div class="h1-wrap">
@@ -175,7 +169,7 @@
                 <div class="more download">全部<img src="images/arrow2.png" alt=""></div>
             </div>
             <ul class="download">
-                <li v-for="item in pNews">
+                <li v-for="(item,index) in pNews" v-if="index<2">
                     <div class="left">
                         <div class="title">{{item.title}}</div>
                         <div class="date">{{item.createTime}}</div>
@@ -185,7 +179,7 @@
             </ul>
         </div>
         <div id="creater">
-            <img :src="baseImgUrl+data.headImage" alt="">
+            <img :src="data.headImage?baseImgUrl+data.headImage:'images/photo-default.png'" alt="">
             <div>
                 <div><span class="name">{{data.realName}}</span><span class="icon">项目创建人</span></div>
                 <div class="ceo">{{data.position}}</div>
@@ -195,7 +189,10 @@
         <div id="ask-remark" class="intro-item">
             <div class="h1-wrap">
                 <h1>项目问答</h1>
-                <div class="more download">查看全部{{answeredNum}}个问答<img src="images/arrow2.png" alt=""></div>
+                <div class="more download">
+                    {{answeredNum?'查看全部'+answeredNum+'个回答':'暂无回答'}}
+                    <img src="images/arrow2.png" alt="">
+                </div>
             </div>
             <ul class="ask-list download">
                 <li v-for="item in answerDOList">
@@ -211,7 +208,8 @@
             </ul>
             <div class="h1-wrap">
                 <h1>项目评论</h1>
-                <div class="more download">查看全部{{comments[0].commentNum}}个评论<img src="images/arrow2.png" alt=""></div>
+                <div v-if="comments&&comments[0]" class="more download">查看全部{{comments[0].commentNum}}个评论<img src="images/arrow2.png" alt=""></div>
+                <div v-else class="more download">暂无评论<img src="images/arrow2.png" alt=""></div>
             </div>
             <ul class="remark-list">
                 <li v-for="comment in comments">
@@ -245,7 +243,7 @@
                     </div>
                 </li>
             </ul>
-            <div class="all-remark download">查看全部{{comments[0].commentNum}}个评论</div>
+            <div v-if="comments&&comments[0]" class="more more-bottom download">查看全部{{comments[0].commentNum}}个评论<img src="images/arrow2.png" alt=""></div>
         </div>
         <div id="nomore">没有更多内容了</div>
         <div id="bottom" class="download">
@@ -259,10 +257,10 @@
     </div>
     <script src="js/rem.js"></script>
     <script src="js/iscroll.js"></script>
-    <script src="js/vue-min.js"></script>
+    <script src="js/vue.js"></script>
     <script src="js/vue-resource.js"></script>
     <script type="text/javascript">
-        function isPassive() {
+        function isPassive() { 
             var supportsPassiveOption = false;
             try {
                 addEventListener("test", null, Object.defineProperty({}, 'passive', {
@@ -285,23 +283,24 @@
                 baseImgUrl: 'https://mayiangel.oss-cn-hangzhou.aliyuncs.com/',
                 data: {},
                 star: [],
-                projectId: 2498,
-                memberId: 26124,
+                projectId: -1,
+                memberId: -1,
                 answerDOList: [], //已回答问题
-                questionDOList: [], //未回答问题
+                questionDOList: [], //未回答问题/
                 answeredNum: 0,
-                comments: null,  //评论
+                comments: [],  //评论
                 navClass: '',
                 navActive: 'detail',
                 projectProcess: ['','想法创意','研发中','上线运营','已有收入','盈亏平均','快速成长'],
-                pNews: []
+                pNews: [],
+                showBigLogo: true
             },
             created(){
                 if(getParam('id')){
                     this.projectId = getParam('id');
                 }
-                if(getParam('memberId')){
-                    this.memberId = getParam('memberId');
+                if(getParam('member_id')){
+                    this.memberId = getParam('member_id');
                 }
                 var self = this;
                 Vue.http.post(this.baseUrl+'project/info/andviews',{"id": this.projectId,"memberId": this.memberId},{}).then(rsp=>{
@@ -325,6 +324,9 @@
                 });
                 //项目问答
                 Vue.http.post(this.baseUrl+'project/info/question',{"id": this.projectId},{}).then(rsp=>{
+                    if(rsp.err){
+                        return;
+                    }
                     this.answerDOList = rsp.data.data.answerDOList;
                     this.questionDOList = rsp.data.data.questionDOList;
                     this.answeredNum = rsp.data.data.answeredNum;
@@ -337,6 +339,9 @@
                     pageSize: 5
                 };
                 Vue.http.post(this.baseUrl+'site/comment/list', reqData, {}).then(rsp=>{
+                    if(rsp.err){
+                        return;
+                    }
                     this.comments = rsp.data.data;
                     this.comments.map((item)=>{
                         var stars = [];
@@ -358,29 +363,47 @@
                 });
                 //项目动态
                 reqData = {
-                    'projectId': 2498
+                    'projectId': this.projectId
                 };
                 Vue.http.post(this.baseUrl+'project/projectnews/find', reqData, {}).then(rsp=>{
+                    if(rsp.err){
+                        return;
+                    }
                     this.pNews= rsp.data.data;
                     this.pNews.map(item=>{
                         item.createTime = timestampToTime(item.createTime);
                     });
                 });
-
-                window.addEventListener('scroll', function(){
+                var self = this;
+                window.addEventListener('scroll', function(e){
+                    console.log(e);
                     var detail = document.getElementById('detail');
-                    var advantage = document.getElementById('advantage');
-                    var bp = document.getElementById('bp');
+                    var advantage = document.getElementById('advantage-flag');
+                    var bp = document.getElementById('bp-flag');
+
+                    var detailBottom = document.getElementById('detail-bottom');
+                    var advantageBottom = document.getElementById('advantage-bottom');
+                    var bpBottom = document.getElementById('bp-bottom');
                     var nav = document.getElementById('nav-wrap');
 
                     var detailTop = detail.getBoundingClientRect().top;
                     var advantageTop = advantage.getBoundingClientRect().top;
                     var bpTop = bp.getBoundingClientRect().top;
+                    var detailBottomTop = detailBottom.getBoundingClientRect().top;
+                    var advantageBottomTop = advantageBottom.getBoundingClientRect().top;
+                    var bpBottomTop = bpBottom.getBoundingClientRect().top;
                     var navTop = nav.getBoundingClientRect().top;
                     if(navTop<-10){
                         self.navClass = 'fixed';
                     }else{
                         self.navClass = '';
+                    }
+                    if(bpTop<10){
+                        self.navActive = 'bp';
+                    }else if(advantageTop<10){
+                        self.navActive = 'advantage';
+                    }else if(detailTop<0){
+                        self.navActive = 'detail';
                     }
                 });
             },
@@ -389,6 +412,13 @@
             methods:{
                 download(){
                     window.location.href = 'http://url.cn/5Imqyj2';
+                },
+                play(){
+                    console.log('......');
+                    var myVideo=document.getElementById("video");
+                    myVideo.play();
+                    console.log(this.showBigLogo);
+                    this.showBigLogo = false;
                 }
             }
         });
@@ -466,6 +496,40 @@
             return paramValue == "" && (paramValue = null), paramValue 
         } 
 
+
+        wx.config({
+                debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来
+                appId: '', // 必填，公众号的唯一标识
+                timestamp: 0, // 必填，生成签名的时间戳
+                nonceStr: '', // 必填，生成签名的随机串
+                signature: '',// 必填，签名，见附录1
+                jsApiList: [
+                    "onMenuShareTimeline",//分享朋友圈接口
+                    "onMenuShareAppMessage"//分享给朋友接口
+                ] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+        });
+        var Imgurl = 'http://img14.3lian.com/201505/25/5273c774b3abb5e8c832724a6bf3c63d.png?201542591656';
+        wx.ready(function(res) {
+            wx.onMenuShareAppMessage({
+                title: document.title,
+                desc:document.title,
+                link: link,
+                imgUrl: Imgurl,
+                trigger: function(res) {},
+                success: function(res) {},
+                cancel: function(res) {},
+                fail: function(res) {}
+            });
+            wx.onMenuShareTimeline({
+                title: document.title,
+                link: link,
+                imgUrl: Imgurl,
+                trigger: function(res) {},
+                success: function(res) {},
+                cancel: function(res) {},
+                fail: function(res) {}
+            });
+        });
     </script>
 </body>
 </html>
